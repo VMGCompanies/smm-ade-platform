@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { AlertTriangle, CheckCircle, Upload, RefreshCw, ChevronRight } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Upload, RefreshCw, ChevronRight, MessageCircle } from 'lucide-react';
+import AdeChat from '../components/ade/AdeChat';
 import { nataliaPortfolio, NataliaAccount } from '../data/natalia_portfolio';
 import { apBatches, vendorPanels, monthlyRentSchedule } from '../data/ap_batches';
 import { activityLog } from '../data/activity_log';
@@ -378,6 +379,7 @@ const ActivityLogTab: React.FC = () => {
 
 const NataliaWorkspace: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NataliaTab>('billing');
+  const [chatOpen, setChatOpen] = useState(false);
 
   const tabs: { id: NataliaTab; label: string }[] = [
     { id: 'billing', label: 'Billing Portfolio' },
@@ -400,10 +402,19 @@ const NataliaWorkspace: React.FC = () => {
             <p className="text-sm text-text-muted">Accounts Payable · Vendor Mgmt · JE · 24 Accounts</p>
           </div>
         </div>
-        <span className="flex items-center gap-1.5 text-xs text-accent-green bg-accent-green-light px-3 py-1.5 rounded-full font-medium">
-          <span className="w-1.5 h-1.5 bg-accent-green rounded-full animate-pulse" />
-          NATALIA Active · 18 tasks today
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="flex items-center gap-1.5 text-xs text-accent-green bg-accent-green-light px-3 py-1.5 rounded-full font-medium">
+            <span className="w-1.5 h-1.5 bg-accent-green rounded-full animate-pulse" />
+            NATALIA Active · 18 tasks today
+          </span>
+          <button
+            onClick={() => setChatOpen(!chatOpen)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${chatOpen ? 'bg-natalia-accent text-white' : 'bg-natalia-accent/10 text-natalia-accent hover:bg-natalia-accent hover:text-white'}`}
+          >
+            <MessageCircle size={14} />
+            Chat with NATALIA
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-1 bg-bg-secondary rounded-xl p-1 w-fit flex-wrap">
@@ -435,6 +446,8 @@ const NataliaWorkspace: React.FC = () => {
         {activeTab === 'je' && <JeManagementTab />}
         {activeTab === 'activity' && <ActivityLogTab />}
       </div>
+      {/* ADE Chat drawer */}
+      {chatOpen && <AdeChat ade="NATALIA" onClose={() => setChatOpen(false)} />}
     </div>
   );
 };

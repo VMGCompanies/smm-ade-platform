@@ -1,14 +1,16 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Bell, User, CheckCircle2 } from 'lucide-react';
+import { Bell, Settings, CheckCircle2 } from 'lucide-react';
 
 const navLinks = [
   { to: '/', label: 'Dashboard', exact: true },
   { to: '/mai', label: 'MAI ADE' },
   { to: '/natalia', label: 'NATALIA ADE' },
   { to: '/collections', label: 'Collections' },
+  { to: '/workflows', label: 'Workflows' },
+  { to: '/documents', label: 'Documents' },
+  { to: '/scenarios', label: 'Scenarios' },
   { to: '/reports', label: 'Reports' },
-  { to: '/settings', label: 'Settings' },
 ];
 
 const TopNav: React.FC = () => {
@@ -22,14 +24,14 @@ const TopNav: React.FC = () => {
       </div>
 
       {/* Nav Links */}
-      <nav className="flex items-center gap-1 flex-1">
+      <nav className="flex items-center gap-0.5 flex-1 overflow-x-auto">
         {navLinks.map(link => (
           <NavLink
             key={link.to}
             to={link.to}
             end={link.exact}
             className={({ isActive }) =>
-              `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors font-sans ${
+              `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors font-sans whitespace-nowrap ${
                 isActive
                   ? 'bg-accent-blue-light text-accent-blue'
                   : 'text-text-secondary hover:text-text-primary hover:bg-bg-secondary'
@@ -42,7 +44,7 @@ const TopNav: React.FC = () => {
       </nav>
 
       {/* Right side */}
-      <div className="flex items-center gap-3 ml-auto">
+      <div className="flex items-center gap-3 ml-auto flex-shrink-0">
         {/* QB Connected */}
         <div className="flex items-center gap-1.5 bg-accent-green-light text-accent-green text-xs font-medium px-2.5 py-1 rounded-full">
           <CheckCircle2 size={12} />
@@ -56,6 +58,16 @@ const TopNav: React.FC = () => {
             4
           </span>
         </button>
+
+        {/* Settings gear */}
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            `w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${isActive ? 'bg-accent-blue-light text-accent-blue' : 'text-text-secondary hover:bg-bg-secondary'}`
+          }
+        >
+          <Settings size={16} />
+        </NavLink>
 
         {/* User */}
         <div className="flex items-center gap-2 bg-bg-secondary px-3 py-1.5 rounded-lg cursor-pointer hover:bg-border-base transition-colors">

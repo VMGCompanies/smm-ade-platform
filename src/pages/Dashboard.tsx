@@ -1,10 +1,14 @@
 import React from 'react';
-import { DollarSign, TrendingDown, TrendingUp, Clock, Zap, Calendar } from 'lucide-react';
+import { DollarSign, TrendingDown, TrendingUp, Clock, Zap, Calendar, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import KpiCard from '../components/common/KpiCard';
 import ArAgingWaterfall from '../components/charts/ArAgingWaterfall';
 import CashFlowTrend from '../components/charts/CashFlowTrend';
 import AdeActivityFeed from '../components/common/AdeActivityFeed';
 import StatusPill from '../components/common/StatusPill';
+import ConsciousnessStream from '../components/ade/ConsciousnessStream';
+import { useWorkflowStore } from '../stores/workflowStore';
+import { hasApiKey } from '../lib/claudeApi';
 
 const apUpcoming = [
   { vendor: 'AP Batch B-2026-12 (18 vendors)', amount: 67200, due: 'Mar 21', status: 'pending_approval' as const },
@@ -23,16 +27,38 @@ const priorityQueue = [
 ];
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const { workflows } = useWorkflowStore();
+  const activeWorkflows = workflows.filter(w => !['idle', 'complete'].includes(w.status));
+
   return (
     <div className="p-6 space-y-6">
+      {/* API Key Banner */}
+      {!hasApiKey() && (
+        <div className="bg-accent-amber-light border border-accent-amber/30 rounded-xl px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm text-accent-amber">
+            <Zap size={16} />
+            <span><strong>AI features disabled.</strong> Add your Anthropic API key to <code className="font-mono text-xs bg-accent-amber/10 px-1 py-0.5 rounded">.env</code> as <code className="font-mono text-xs bg-accent-amber/10 px-1 py-0.5 rounded">VITE_ANTHROPIC_API_KEY</code> to enable real AI capabilities.</span>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text-primary font-display">Command Dashboard</h1>
           <p className="text-sm text-text-muted mt-0.5">SMM Facilities Accounting — ADE Platform · March 23, 2026</p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-accent-green bg-accent-green-light px-3 py-1.5 rounded-full font-medium">
-          <span className="w-1.5 h-1.5 bg-accent-green rounded-full animate-pulse" />
-          2 ADE Agents Active
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate('/scenarios')}
+            className="flex items-center gap-1.5 text-xs bg-bg-secondary text-text-secondary hover:text-text-primary hover:bg-border-base px-3 py-1.5 rounded-full font-medium transition-colors"
+          >
+            <Zap size={12} /> Run Scenario
+          </button>
+          <div className="flex items-center gap-2 text-xs text-accent-green bg-accent-green-light px-3 py-1.5 rounded-full font-medium">
+            <span className="w-1.5 h-1.5 bg-accent-green rounded-full animate-pulse" />
+            2 ADE Agents Active
+          </div>
         </div>
       </div>
 
@@ -133,6 +159,24 @@ const Dashboard: React.FC = () => {
             </span>
           </div>
           <AdeActivityFeed maxItems={8} compact />
+
+          {/* Active workflows quick view */}
+          {activeWorkflows.length > 0 && (
+            <div className="mt-4 pt-3 border-t border-border-base">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-medium text-text-secondary">Active Workflows</p>
+                <button onClick={() => navigate('/workflows')} className="text-xs text-accent-blue hover:underline flex items-center gap-0.5">
+                  View all <ArrowRight size={10} />
+                </button>
+              </div>
+              {activeWorkflows.slice(0, 2).map(wf => (
+                <div key={wf.id} className="flex items-center justify-between py-1.5">
+                  <p className="text-xs text-text-secondary truncate flex-1 mr-2">{wf.name}</p>
+                  <span className="text-xs font-mono font-bold text-text-primary">{wf.progress}%</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* AP Upcoming */}
@@ -185,8 +229,17 @@ const Dashboard: React.FC = () => {
               </div>
             ))}
           </div>
+          <button
+            onClick={() => navigate('/collections')}
+            className="mt-3 w-full py-2 text-xs text-accent-blue font-medium hover:underline flex items-center justify-center gap-1"
+          >
+            View all collections <ArrowRight size={11} />
+          </button>
         </div>
       </div>
+
+      {/* Consciousness Stream */}
+      <ConsciousnessStream defaultExpanded={false} />
 
       {/* ADE ROI Estimator */}
       <div className="bg-gradient-to-r from-mai-accent to-natalia-accent rounded-xl p-6 text-white">

@@ -7,6 +7,9 @@ import NataliaWorkspace from './pages/NataliaWorkspace'
 import Collections from './pages/Collections'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
+import Workflows from './pages/Workflows'
+import DocumentIntelligence from './components/upload/DocumentIntelligence'
+import WhatIfEngine from './components/scenarios/WhatIfEngine'
 
 function App() {
   return (
@@ -17,6 +20,9 @@ function App() {
           <Route path="mai" element={<MaiWorkspace />} />
           <Route path="natalia" element={<NataliaWorkspace />} />
           <Route path="collections" element={<Collections />} />
+          <Route path="workflows" element={<Workflows />} />
+          <Route path="documents" element={<DocumentIntelligence />} />
+          <Route path="scenarios" element={<WhatIfEngine />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
         </Route>
